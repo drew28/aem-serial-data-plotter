@@ -23,8 +23,8 @@
       }
    
       public String generateSerialData() { 
-         double min_value = -25,
-            max_value = 25,
+         double min_value = -35,
+            max_value = 30,
             f = value,
             lambda = (Math.random() * 2) - 1;
          String ret;
@@ -41,7 +41,10 @@
          
          //System.out.println(ret);
          addData(Double.valueOf(ret));
-      
+         try {
+             Thread.sleep(5);
+         }
+         catch (InterruptedException e) {}
          return ret;
       }
    
