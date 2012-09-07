@@ -2,14 +2,6 @@
 import java.awt.*;
 import java.util.*;
 
-/**
- * Example6Applet
- *
- * This is a template applet for animation. It illustrates how to use double
- * buffering.
- *
- * @author Arthur van Hoff
- */
 public class SerialDataPlotter extends Panel implements Runnable {
 
     int frame;
@@ -19,46 +11,44 @@ public class SerialDataPlotter extends Panel implements Runnable {
     Image offImage;
     Graphics offGraphics;
     Color[] lineColors = new Color[2];
-    private DataReader reader = new SerialPortReader("COM4", "arduino");
-    private DataReader analog = new SerialPortReader("COM5", "serial");
     Object[] values;
     java.util.List<DataReader> readers = new ArrayList();
 
-    public SerialDataPlotter() {
+    public SerialDataPlotter(DataReader signals[]) {
+        for (int i = 0; i < signals.length; i++) {
+            readers.add(signals[i]);
+        }
         lineColors[0] = Color.blue;
         lineColors[1] = Color.magenta;
-        readers.add(reader);
-        readers.add(analog);
     }
 
     public static void main(String[] args) {
         Frame app = new Frame();
         app.addWindowListener(
                 new java.awt.event.WindowAdapter() {
-
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
-                    }
-                ;
+                    };
         });
-      
-      
-      
-         SerialDataPlotter sdp = new SerialDataPlotter();
+    
+        DataReader[] signals = new DataReader[2];
+        signals[0] = new MockData();//SerialPortReader("COM4", "arduino");;
+        signals[1] = new MockData();//SerialPortReader("COM5", "serial");
+        SerialDataPlotter sdp = new SerialDataPlotter(signals);
 
         sdp.setSize(400, 350);
         app.add(sdp);
         app.pack();
         //app.init();
-        app.setSize(800, 700 + 20);
+        app.setSize (800, 700 + 20);
         app.show();
+
         sdp.start();
     }
-
     /**
-     * This method is called when the applet becomes visible on the screen.
-     * Create a thread and start it.
+     * This method is called when the applet becomes visible on the screen. Create a
+     * thread and start it.
      */
     public void start() {
         animator = new Thread(this);
@@ -70,7 +60,7 @@ public class SerialDataPlotter extends Panel implements Runnable {
      * It does the main animation.
      */
     @Override
-    public void run() {
+        public void run() {
         // Remember the starting time
         //long tm = System.currentTimeMillis();
         while (Thread.currentThread() == animator) {
@@ -106,7 +96,7 @@ public class SerialDataPlotter extends Panel implements Runnable {
      * Update a frame of animation.
      */
     @Override
-    public void update(Graphics g) {
+        public void update(Graphics g) {
         Dimension d = this.getSize();
         // Create the offscreen graphics context
         if ((offGraphics == null)
@@ -132,6 +122,7 @@ public class SerialDataPlotter extends Panel implements Runnable {
     /**
      * Paint the previous frame (if any).
      */
+    @Override
     public void paint(Graphics g) {
         if (offImage != null) {
             g.drawImage(offImage, 0, 0, null);
@@ -152,7 +143,7 @@ public class SerialDataPlotter extends Panel implements Runnable {
             if ((int) d.width != (int) reader.getMaxValues()) {
                 System.out.println(d.width + " does not match " + reader.maxValues);
                 reader.changeMaxValues(d.width);
-                //analog.changeMaxValues(d.width);
+                //signal2.changeMaxValues(d.width);
             }
         }
         

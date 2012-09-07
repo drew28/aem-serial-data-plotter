@@ -139,7 +139,6 @@
             str = new String(buffer);
             if(skippedFirstLine) {
             //read line
-                System.out.println(convertToGaugeValue(str, -30, 35));
                 addData(convertToGaugeValue(str, -30, 35));
             } 
             else {
