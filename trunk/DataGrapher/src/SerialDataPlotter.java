@@ -10,17 +10,31 @@ public class SerialDataPlotter extends Panel implements Runnable {
     Dimension offDimension;
     Image offImage;
     Graphics offGraphics;
-    Color[] lineColors = new Color[2];
+    Color[] lineColors = new Color[5];
     Object[] values;
     java.util.List<DataReader> readers = new ArrayList();
 
     public SerialDataPlotter(DataReader signals[]) {
+        this();
         for (int i = 0; i < signals.length; i++) {
             readers.add(signals[i]);
         }
+    }
+    
+    public SerialDataPlotter() {
         lineColors[0] = Color.blue;
         lineColors[1] = Color.magenta;
+        lineColors[2] = Color.pink;
+        lineColors[3] = Color.green;
+        lineColors[4] = Color.darkGray;
     }
+    
+    public void addReader(DataReader toAdd) {
+        readers.add(toAdd);
+        start();
+        stop();
+    }
+
 
     public static void main(String[] args) {
         Frame app = new Frame();
@@ -33,7 +47,7 @@ public class SerialDataPlotter extends Panel implements Runnable {
         });
     
         DataReader[] signals = new DataReader[2];
-        signals[0] = new MockData();//SerialPortReader("COM4", "arduino");;
+        signals[0] = new MockData();//SerialPortReader("COM4", "arduino");
         signals[1] = new MockData();//SerialPortReader("COM5", "serial");
         SerialDataPlotter sdp = new SerialDataPlotter(signals);
 
@@ -41,7 +55,7 @@ public class SerialDataPlotter extends Panel implements Runnable {
         app.add(sdp);
         app.pack();
         //app.init();
-        app.setSize (800, 700 + 20);
+        app.setSize (400, 700 + 20);
         app.show();
 
         sdp.start();
@@ -137,13 +151,13 @@ public class SerialDataPlotter extends Panel implements Runnable {
         int x1 = 0, y1 = 175, y2 = 0, value, i, j, k, xAdjust = 0, yAdjust = 0;
         int peakValueIndex = 0;
         DataReader reader;
+        
         for (k = 0; k < readers.size(); k++) {
             reader = readers.get(k);
             //draw as wide as the width of the application.
             if ((int) d.width != (int) reader.getMaxValues()) {
                 System.out.println(d.width + " does not match " + reader.maxValues);
                 reader.changeMaxValues(d.width);
-                //signal2.changeMaxValues(d.width);
             }
         }
         
@@ -191,13 +205,28 @@ public class SerialDataPlotter extends Panel implements Runnable {
 
     public void drawGraphLayout(Graphics g) {
         Dimension d = size();
-        int y1;
+        int y1, xMargin = 10, yMargin = 5;
+        String step = "0";
         for (int i = 0; i < 14; i++) {
             y1 = i * 25;
             if (i == 7) {
                 g.setColor(Color.red);
+                g.drawString("0", 10, y1);
             } else {
-                g.setColor(Color.black);
+                g.setColor(Color.gray);
+                switch(i) {
+                    case 1: g.drawString("30", xMargin, y1 + yMargin);
+                        break;
+                    case 3: g.drawString("20", xMargin, y1 + yMargin);
+                        break;
+                    case 5: g.drawString("10", xMargin, y1 + yMargin);
+                        break;
+                    case 9: g.drawString("-10", xMargin, y1 + yMargin);
+                        break;
+                    case 11: g.drawString("-20", xMargin, y1 + yMargin);
+                        break;
+                    case 13: g.drawString("-30", xMargin, y1 + yMargin);                        
+                }
             }
             g.drawLine(0, y1, d.width, y1);
         }

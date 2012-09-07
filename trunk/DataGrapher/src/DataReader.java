@@ -2,10 +2,9 @@
    import java.util.*;
 
    public class DataReader  {
-      protected static final int AFR = 0;
-      protected static final int BOOST = 1;
    
       protected List<Double> values;
+      public String name;
       
       protected int maxValues = 500;
    
@@ -39,5 +38,9 @@
          DecimalFormat df = new DecimalFormat("#.0");
          String ret = df.format(d);
          return Double.valueOf(ret);
+      }
+      
+      public String toString() {
+          return name;
       }
    }
