@@ -16,28 +16,43 @@ public class SerialDataPlotter extends Panel implements Runnable {
 
     public SerialDataPlotter(DataReader signals[]) {
         this();
-        for (int i = 0; i < signals.length; i++) {
-            readers.add(signals[i]);
-        }
+        readers.addAll(Arrays.asList(signals));
     }
     
+    public SerialDataPlotter(DataReader reader) {
+        this();
+        readers.add(reader);
+        System.out.println("SerialDataPlotter::constructor: reader added.");
+    }
+    
+    /**
+     *
+     */
     public SerialDataPlotter() {
         lineColors[0] = Color.blue;
         lineColors[1] = Color.magenta;
         lineColors[2] = Color.pink;
         lineColors[3] = Color.green;
         lineColors[4] = Color.darkGray;
+        setPreferredSize(new Dimension(400, 350));
+        System.out.println("SerialDataPlotter::constructor: created.");
     }
     
     public void addReader(DataReader toAdd) {
+        System.out.println("SerialDataPlotter::addReader: Reader added");
         readers.add(toAdd);
-        start();
-        stop();
+        //start();
+        //stop();
+    }
+    
+    public DataReader getReader(int index) {
+        return readers.get(index);
     }
 
 
     public static void main(String[] args) {
         Frame app = new Frame();
+        
         app.addWindowListener(
                 new java.awt.event.WindowAdapter() {
                     @Override
@@ -165,7 +180,7 @@ public class SerialDataPlotter extends Panel implements Runnable {
 
         for (k = 0; k < readers.size(); k++) {
             reader = readers.get(k);
-            g.setColor(lineColors[k]);
+            g.setColor(lineColors[k % lineColors.length]);
             values = reader.getValues();
             peakValueIndex = getPeakValueIndex(values);
 
@@ -247,8 +262,10 @@ public class SerialDataPlotter extends Panel implements Runnable {
                 System.out.println("Failed to create a double from the string '" + values[i] + "'");
             }
         }
-
-
         return ret;
+    }
+    
+    public void clearReaders() {
+        readers = new ArrayList();
     }
 }

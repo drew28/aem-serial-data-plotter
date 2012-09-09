@@ -11,6 +11,14 @@
       public DataReader() {
          values = new ArrayList<Double>();
       }
+      
+      public DataReader(ArrayList<Double> values) {
+          this.values = new ArrayList<Double>(values);
+      }
+      
+      public DataReader(DataReader reader) {
+          this.values = new ArrayList<Double>(reader.values);
+      }
     
       public Object[] getValues() {
          return values.toArray();
