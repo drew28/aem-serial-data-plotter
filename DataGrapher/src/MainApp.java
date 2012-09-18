@@ -12,7 +12,9 @@ public class MainApp extends Frame implements ActionListener {
     DataReader[] signals = new DataReader[2];
     boolean snapshotCreated = false;
     CheckboxMenuItemListener checkboxMenuListener = new CheckboxMenuItemListener();
-            
+    Menu file, edit, graph;
+    Datalogger logger;
+    
     MainApp()
     {
         super("the Unoffical AEM Guage Grapher");
@@ -48,23 +50,25 @@ public class MainApp extends Frame implements ActionListener {
     }
             
     private MenuBar createMenuBar() {
-        Menu file = new Menu("File"),
-            edit = new Menu("Edit"),
-            graph = new Menu("Graph");
+        file = new Menu("File");
+        edit = new Menu("Edit");
+        graph = new Menu("Graph");
         
-        file.add(makeMenuItem("Save graph as...", new MenuShortcut(KeyEvent.VK_S)));
+        file.add(makeMenuItem("Start logging", new MenuShortcut(KeyEvent.VK_R, true)));
+        file.add(makeMenuItem("Stop logging", new MenuShortcut(KeyEvent.VK_T, true)));
+        file.addSeparator();
         file.add(makeMenuItem("Exit"));
-        
+        file.getItem(1).setEnabled(false);
         edit.add(makeMenuItem("Settings"));
         
         graph.add(makeMenuItem("Start", new MenuShortcut(KeyEvent.VK_G)));
-        graph.add(makeMenuItem("Stop", new MenuShortcut(KeyEvent.VK_R)));
+        graph.add(makeMenuItem("Stop", new MenuShortcut(KeyEvent.VK_H)));
         graph.addSeparator();
         graph.add(makeCheckboxMenuItem("Analog"));
         graph.add(makeCheckboxMenuItem("Serial"));
         graph.addSeparator();
         graph.add(makeMenuItem("Snapshot", new MenuShortcut(KeyEvent.VK_P)));
-        graph.add(makeMenuItem("Clear Snapshots", new MenuShortcut(KeyEvent.VK_E)));
+        graph.add(makeMenuItem("Clear Snapshots", new MenuShortcut(KeyEvent.VK_W)));
                 
         MenuBar mb = new MenuBar();
         mb.add(file);
@@ -112,14 +116,16 @@ public class MainApp extends Frame implements ActionListener {
         else if (command.equals("Settings")) {
             System.out.println("Settings");
         }
-        else if (command.equals("Save graph as...")) {
-            System.out.println("Save graph as...");
+        else if (command.equals("Start logging")) {
+            file.getItem(1).setEnabled(true);
+            file.getItem(0).setEnabled(false);
+            logger = new Datalogger();
+            
         }
-        else if (command.equals("Analog")) {
-            System.out.println("Only analog");
-        }
-        else if (command.equals("Serial")) {
-            System.out.println("Only Serial");
+        else if (command.equals("Stop logging")) {
+            file.getItem(0).setEnabled(true);
+            file.getItem(1).setEnabled(false);
+            logger.stop();
         }
         else if (command.equals("Snapshot")) {
             takeSnapshot();
@@ -127,7 +133,7 @@ public class MainApp extends Frame implements ActionListener {
             clearSnapshots();
         }   
     }
-    
+
     public void takeSnapshot() {
         DataReader copyReader = new DataReader(live.getReader(0));
         if(!snapshotCreated) {
