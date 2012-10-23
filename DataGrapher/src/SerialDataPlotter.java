@@ -4,15 +4,15 @@ import java.util.*;
 
 public class SerialDataPlotter extends Panel implements Runnable {
 
-    int frame;
-    int delay;
-    Thread animator;
-    Dimension offDimension;
-    Image offImage;
-    Graphics offGraphics;
-    Color[] lineColors = new Color[5];
-    Object[] values;
-    java.util.List<DataReader> readers = new ArrayList();
+    private int frame;
+    private int delay;
+    private Thread animator;
+    private Dimension offDimension;
+    private Image offImage;
+    private Graphics offGraphics;
+    private Color[] lineColors = new Color[5];
+    private Object[] values;
+    private java.util.List<DataReader> readers = new ArrayList();
 
     public SerialDataPlotter(DataReader signals[]) {
         this();
@@ -48,7 +48,13 @@ public class SerialDataPlotter extends Panel implements Runnable {
     public DataReader getReader(int index) {
         return readers.get(index);
     }
-
+    
+    /**
+     *
+     */
+    public int numReaders() {
+        return readers.size();
+    }
 
     public static void main(String[] args) {
         Frame app = new Frame();
@@ -125,7 +131,7 @@ public class SerialDataPlotter extends Panel implements Runnable {
      * Update a frame of animation.
      */
     @Override
-        public void update(Graphics g) {
+    public void update(Graphics g) {
         Dimension d = this.getSize();
         // Create the offscreen graphics context
         if ((offGraphics == null)

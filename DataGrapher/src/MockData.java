@@ -7,7 +7,12 @@
       public MockData() {
          super();
       }
-   
+      
+      public MockData(String source) {
+          this();
+          this.source = source;
+      }
+      
       public static void main(String[] args) {
          MockData md = new MockData();
          
