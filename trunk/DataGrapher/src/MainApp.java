@@ -30,8 +30,8 @@ public class MainApp extends Frame implements ActionListener {
         setLayout(new FlowLayout());
         
         
-        signals[0] = new MockData();//SerialPortReader("COM4", "arduino");
-        signals[1] = new MockData();//SerialPortReader("COM5", "serial");
+        signals[0] = new MockData("analog");//SerialPortReader("COM4", "arduino"); //analog
+        signals[1] = new MockData("serial");//SerialPortReader("COM5", "serial"); //serial
         live = new SerialDataPlotter(signals);
         snapshot = new SerialDataPlotter();
         add("West", live);
@@ -119,13 +119,12 @@ public class MainApp extends Frame implements ActionListener {
         else if (command.equals("Start logging")) {
             file.getItem(1).setEnabled(true);
             file.getItem(0).setEnabled(false);
-            logger = new Datalogger();
-            
+            live.getReader(0).startLogging();
         }
         else if (command.equals("Stop logging")) {
             file.getItem(0).setEnabled(true);
             file.getItem(1).setEnabled(false);
-            logger.stop();
+            live.getReader(0).stopLogging();
         }
         else if (command.equals("Snapshot")) {
             takeSnapshot();

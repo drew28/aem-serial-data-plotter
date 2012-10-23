@@ -14,7 +14,6 @@
       private byte[] buffer = new byte[1024];
       private String line;
       private boolean skippedFirstLine;
-      private String source = "arduino";
       private Thread readThread;
    	
       public static void main ( String[] args )
