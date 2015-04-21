@@ -1,0 +1,1 @@
+Used to graph serial data from a serial source such as an AEM Boost Gauge, or an Arduino.
